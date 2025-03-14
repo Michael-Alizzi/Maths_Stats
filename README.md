@@ -1,5 +1,5 @@
 ### Set up ###
-### Download the appropriate version of Git here https://git-scm.com/downloads
+## Download the appropriate version of Git here https://git-scm.com/downloads
 ### In Rstudio>Tools>Global Options>Git/SVN
 ### If your Git executable is "(Not Found)" then click Browse, locate the git.exe file (typically at C:\Program Files\Git\bin or C:\Program Files\Git\cmd), and select it.
 ### Click OK
