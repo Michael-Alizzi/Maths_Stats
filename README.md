@@ -3,6 +3,7 @@
 ### In Rstudio>Tools>Global Options>Git/SVN
 ### If your Git executable is "(Not Found)" then click Browse, locate the git.exe file (typically at C:\Program Files\Git\bin or C:\Program Files\Git\cmd), and select it.
 ### Click OK
+### Restart Rstudio (ctr+shift+F10)
 ### File>New Project>Version Control>Git
 ### Set repository URL as https://github.com/Michael-Alizzi/Maths_Stats.git
 ### Click Create Project
