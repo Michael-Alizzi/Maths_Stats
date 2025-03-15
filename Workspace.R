@@ -1,10 +1,9 @@
-# Pull all functuions
-source('~/Maths_Stats/Maths Functions.R')
+# Pull all functions
+source('~/Maths_Stats/Probability Functions.R')
+source('~/Maths_Stats/Random Variable Functions.R')
+source('~/Maths_Stats/Distribution Functions.R')
 
 # Function metadata
-attributes(indep_prob)
-
-
-
+attributes(geo_p_funct)
 
 
