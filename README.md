@@ -9,6 +9,10 @@
 ### You should have a folder called Maths_Stats that contains all this repo's code
 ### Go to your Terminal in Rstudio
 ### Verify that you are connected to Git by running git status
+### In the Teriminal run the below
+### git config --global user.email "your-email@example.com"
+### git config --global user.name "Your User Name"
+
 
 
 
