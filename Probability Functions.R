@@ -98,7 +98,7 @@ pair_indep_prob <- function(A = NA, B = NA, AandB = NA, AgivenB = NA) {
     
     cat("No \n")
     
-    cat("Use the multi_rule function to get P(A & B) or the condit_prob function to get P(A|B). \n")
+    cat("Use the multi_prob_calc function to get P(A & B) or the condit_prob function to get P(A|B). \n")
     
   }
     
@@ -116,7 +116,7 @@ pair_indep_prob <- function(A = NA, B = NA, AandB = NA, AgivenB = NA) {
       
       cat("No \n")
       
-      cat("Use the multi_rule function to get P(A & B) or the condit_prob function to get P(A|B) or P(B|A). \n")
+      cat("Use the multi_prob_calc function to get P(A & B) or the condit_prob function to get P(A|B) or P(B|A). \n")
       
     }
     
