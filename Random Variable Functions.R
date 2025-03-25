@@ -1,16 +1,15 @@
 # Probability that the first success (rolling a 6) happens after 4 failures (so occurs on the 5th roll).
-geo_p_funct = function(failures, probability, multi){
+geo_p_funct = function(failures, probability, multi = 0){
   
   if(multi == 1){
     
     geo_p <- data.frame(X = 0:failures, 
                         P = numeric(failures + 1)
     )
-
+    
     for(i in 0:failures) {
-      #print(failures)
       
-      P_single <- dgeom(i, prob=probability)
+      P_single <- dgeom(i, prob = probability)
 
       geo_p$P[i+1] <- P_single
       
@@ -18,13 +17,13 @@ geo_p_funct = function(failures, probability, multi){
     
   } else {
     
-    geo_p_multi <- data.frame(X = 1, 
-                              P = numeric(1)
+    geo_p <- data.frame(X = 1, 
+                        P = numeric(1)
     )
     
-    P_single <- dgeom(failures, prob=probability)
+    P_single <- dgeom(failures, prob = probability)
     
-    geo_p$P[failures+1] <- P_single
+    geo_p$P[1] <- P_single
     
   }
   

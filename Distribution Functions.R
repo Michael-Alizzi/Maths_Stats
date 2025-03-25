@@ -1,13 +1,3 @@
-linear_transform_normal <- function(coefficients, means, variances, divisor){
-  mean_dist <- sum(coefficients*means)/divisor
-  
-  var_dist <- (sum(coefficients^2*variances))/(divisor^2)
-  
-  return(list(average = mean_dist, variance = var_dist))
-}
-
-attr(linear_transform_normal, "Linear Transformation of a Normal Distribution") <- "Determines the average and variance of a normally distributed random variable. The coefficients parameter must be a numeric vector with length greater than 1. And the variances and means parameters must be a numeric vector with a length of 1"
-
 Bin_disc_rand_funct = function(n, p){
   
   # Mean of a binomial random variable
@@ -128,7 +118,7 @@ exp_prob_k = function(B, x){
   
 }
 
-attr(exp_prob_k, "Exponential Probability of k") <- "Assuming the random variable is a Exponential distribution, computes the the time until the next events, given the average of a random variable (lambda or 1/B)."
+attr(exp_prob_k, "Exponential Probability of k") <- "Assuming the random variable is a Exponential distribution, computes the time until the next event, given the average of a random variable (lambda or 1/B)."
 
 # A call center receives calls at an average rate of 12 calls per hour. 
 # Assuming the time between calls follows an exponential distribution, 
@@ -205,9 +195,10 @@ normal_dist_prob = function(x, y = NA, avg, std, PX = 2){
   
   }
     
-  return(Prob_X)
-    
   }
+  
+  return(Prob_X)
+  
 }
 attr(normal_dist_prob, "Chance of a Continuous Random Variable with a Normal Distribution") <- "Given the mean and standard deviation in a normal distribution, what is the chance of x, y or the difference between the two. When PX equals 0, it outputs the chance that X is equal to or less than x. When PX equals 1, then outputs the chance of X being greater than x. Leave PX empty and set a y parameter for the chance of X being Less than y and equal to or greater than x."
 
@@ -230,7 +221,7 @@ normal_dist_percent = function(p1, p2, avg, std, PX = NA){
     return(list(x1 = p1_percentile, x2 =p2_percentile))
   }
     
-    
 }
+
 attr(normal_dist_percent, "X at any Percentile Probability of a Continuous Random Variable with a Normal Distribution") <- "Given the mean and standard deviation in a normal distribution, what is the value of x at any probability. The probability represents that X is equal to or less than x. Set PX to 1 and any two percentiles (a value less than 1) to P1 and P2 to get a range of x"
 
