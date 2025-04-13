@@ -1,4 +1,4 @@
-packages <- c("Ryacas", "ggplot2", "dplyr", "tidyr")
+packages <- c("bslib", "shinydashboard", "shiny", "Ryacas", "plotly", "ggplot2", "dplyr", "tidyr", "openxlsx")
 
 for (pkg in packages) {
   
@@ -6,15 +6,36 @@ for (pkg in packages) {
     
     library(pkg, character.only = TRUE)
     
+    cat(' \n')
+    
     cat(pkg, "package Loaded.\n")
+    
+    cat(' \n')
     
   } else {
     
-    install.packages(pkg)
-    
-    cat(pkg, "package installed\n")
-    
+    tryCatch({
+      
+      install.packages(pkg)
+      
+      library(pkg, character.only = TRUE)
+      
+      cat(' \n')
+      
+      cat(pkg, "successfully installed and loaded.\n\n")
+      
+      cat(' \n')
+      
+    }, error = function(e) {
+      
+      cat(' \n')
+      
+      cat("Failed to install", paste0(pkg, ":"), "\n", e$message, "\n\n")
+      
+      cat(' \n')
+      
+    })
     
   }
 }
-
+ 

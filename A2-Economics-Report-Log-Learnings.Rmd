@@ -1,0 +1,360 @@
+---
+title: ''
+author: ''
+date: ''
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+    dev: cairo_pdf
+    fig_caption: true
+    number_sections: false
+    toc: false
+    toc_depth: 2
+  word_document:
+    toc: false
+    toc_depth: '2'
+mainfont: Arial
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+options(scipen = 999)
+
+library('dplyr')
+library('openxlsx')
+library('ggplot2')
+library('extrafont')
+
+
+loadfonts(device = "pdf")
+
+h_data <- read.xlsx('Housing prices.xlsx')
+
+colnames(h_data) <- c("House", "SellingPrice", "Location", "NumberofRooms")
+
+# Scale 13 million to 13000000
+scale_change = function(number, scale = 'm', num = NA){
+  
+  if(scale == 'h') {
+    
+    num1 <- number*100
+    
+    num2 <- number/100
+    
+  } else if(scale == 't') {
+    
+    num1 <- number*1000
+    
+    num2 <- number/1000
+    
+  } else if(scale == 'tt') {
+    
+    num1 <- number*10000
+    
+    num2 <- number/10000
+    
+  } else if(scale == 'ht') {
+    
+    num1 <- number*100000
+    
+    num2 <- number/100000
+  
+  } else {
+    
+    num1 <- number*100000
+    
+    num2 <- number/100000
+    
+  }
+  
+  if(is.na(num)){
+    
+    return(num2)
+    
+  } else {
+    
+    return(num1)
+    
+  }
+  
+}
+
+attr(scale_change, "Scale a Number") <- "Scale a number from or to millions, thousands ect. When the parameter scale = 'h' (hundreds), scale = 'tt' (tens of thousands), scale = 'ht' (hundreds of thousands), scale is empty (millions). Set num to 1 to scale up or leave blank to scale down"
+
+```
+
+\begin{center}
+\LARGE \textbf{The Upside of Upsizing} \\
+\Large \textbf{A Deep Dive into House Size and Price in Melbourne} \\
+\end{center}
+
+\begin{center}
+\Large \textbf{Michael Alizzi} \\
+\Large \textbf{25 March 2025}
+\end{center}
+
+\rule{\textwidth}{0.4pt}
+
+## **Sampling Method**
+Melbourne housing census data on sale price and the number of rooms was unattainable or impractical due to the following reasons:
+
+- Some house sales are private or aren't publicly listed on real estate associations.
+
+- House prices in Melbourne are volatile, fluctuating from a mean of \$908,800 in June 2024 to \$874,200 in December 2024 (Australian Bureau of Statistics 2025). Therefore, an estimate from a sample may yield more accurate results (Sharpe, Norean R., De Veaux, Richard D., Velleman, Paul F., Bock, David E., 2015, p. 275).
+
+- The errors associated with attempting to collect Melbourne housing census data (Sharpe, Norean R., De Veaux, Richard D., Velleman, Paul F., Bock, David E., 2015, p. 275).
+
+The following multi-stage sampling method was conducted.
+
+### 1. Stratified Sampling
+Stratification is appropriate when strata have different variances for some variable being studied (Blair E. and Blair J., 2015, p. 113). Considering previous studies have identified that there are differences between Melbourne’s East and West, this study has assumed that there are differences in the variance of sale price between the two geographical strata.
+
+### 2. Cluster Sampling
+Clustering is appropriate when there are substantial fixed costs associated with each data collection location (Blair E. and Blair J., 2015, p. 129). Considering the constrained budget, this study has assumed that the two clusters chosen for Melbourne’s East and West suburbs (Dandenong and Sunshine respectively) are representative of the population of each strata (Sharpe, Norean R., De Veaux, Richard D., Velleman, Paul F., Bock, David E., 2015, p. 278).
+
+### 3. Simple Random Sampling (SRS)
+From the sampling frames of house data available in Dandenong and Sunshine, this study has assumed that the 10 houses selected in each suburb have been chosen at random with each data point having an equal chance of selection (Blair E. and Blair J., 2015, p. 63).
+
+## **The Relationship Between Rooms & Price**
+A scatter plot was chosen to identify, at a glance, the correlation and strength of the relationship between sale price and number of rooms. The actual data points in the plot allow clear identification of a generally a positive correlation between number of rooms and sale price (as one would expect), regardless of suburb.  
+
+The use of shape and color to distinguish between Dandenong and Sunshine visualises the validity of previous studies that have suggested differences between the two suburbs. 
+
+When plotting two lines of best fit with simple linear regression, Dandenong has a steeper slope than its Sunshine counterpart, indicating a stronger relationship and that increases in room number have a larger effect on sale price. For the Sunshine strata, this could mean that simple linear regression is not the most appropriate regression model.
+
+Additionally, houses in Dandenong generally sell for higher than those in Sunshine, as seen in the differences in the actual data points and the difference in intercepts of the lines of best fit. 
+
+```{r Plot, message = FALSE}
+
+h_plot_data <- h_data %>%
+  mutate(Location = ifelse(Location == 0, "Dandenong", "Sunshine"))
+
+ggplot(h_plot_data, 
+       aes(x = NumberofRooms,
+           y = SellingPrice, 
+           color = Location,
+           shape = Location
+           )
+       ) +
+  geom_point(size = 2.2) +
+  geom_smooth(method = 'lm', 
+              linewidth = 0.5,
+              se = FALSE
+              ) +
+  scale_shape_manual(
+    values = c(0, 17)
+    ) + 
+  scale_color_manual(
+    values = c("Dandenong" = "#0096FF", 
+               "Sunshine" = "#FFA500"
+               )
+    ) + 
+  labs(x = "Number of Rooms", 
+       y = "House Sale Price"
+       ) +
+  theme(
+    axis.title.x = element_text(face = "bold", 
+                                family = "Arial", 
+                                size = 12
+                                ),
+    axis.title.y = element_text(face = "bold", 
+                                family = "Arial", 
+                                size = 12
+                                ),
+    axis.text.x = element_text(family = "Arial",
+                               size = 8),
+    axis.text.y = element_text(family = "Arial", 
+                               size = 8),
+    panel.background = element_rect(fill = "#E4E4E4"),
+    plot.background = element_rect(fill = "white")
+  )
+
+```
+
+## **Initial Estimation of Regression Equation**
+Two multiple linear regression models were estimated using Ordinary Least Squares (OLS), one with no transformation and one with a log transformation of the dependent variable. A log transformation was chosen as the dependent variable, selling price, is unlikely to be negative. These two regression models will be compared to determine which is the most appropriate.
+
+```{r Linear Estimation, echo = FALSE}
+
+multi_linear <- lm(SellingPrice~NumberofRooms+Location, data = h_data)
+
+```
+
+### Linear Equation
+
+$$
+\text{SalePrice} = 155.29 + (`r round(multi_linear$coefficient[2], 2)` \cdot \text{NumberOfRooms}) - (`r abs(round(multi_linear$coefficient[3], 2))` \cdot \text{Location}) + \varepsilon
+$$
+
+### Linear Interpretation
+
+Holding disturbance ($\varepsilon$) and location constant, for every additional room in a house, sale price on average increases by \$`r scale_change(round(multi_linear$coefficient[2], 2), scale = 't', num = 1)`.
+
+Holding disturbance ($\varepsilon$) and the number of rooms constant, when location equals 1 (or alternatively, the house is in Sunshine), sale price on average decreases by \$`r abs(scale_change(round(multi_linear$coefficient[3], 2), scale = 't', num = 1))`.
+
+For example, a nine room house in Dandenong (Melbourne's East) will have an expected value of sale price as:
+
+$$
+\hat{\text{SalePrice}} = `r round(multi_linear$coefficient[1], 2)` + (`r round(multi_linear$coefficient[2], 2)` \cdot 9) - (`r abs(round(multi_linear$coefficient[3], 2))` \cdot 0) = 
+$$
+
+$$
+`r round(predict(multi_linear, newdata = data.frame(NumberofRooms = 9, Location = 0)), 4)`
+$$
+
+$$
+Or
+$$
+
+$$
+\$ `r round(scale_change(predict(multi_linear, newdata = data.frame(NumberofRooms = 9, Location = 0)), scale = 't', num = 1), 1)`
+$$
+
+```{r Log Estimation, echo = FALSE}
+
+log_linear <- lm(log(SellingPrice)~NumberofRooms+Location, data = h_data)
+
+```
+
+### Log-Linear Equation
+
+$$ 
+\log(\text{SalePrice}) =  `r round(log_linear$coefficient[1], 2)` + (`r round(log_linear$coefficient[2], 2)` \cdot \text{NumberOfRooms}) - (`r abs(round(log_linear$coefficient[3], 2))` \cdot \text{Location}) + \varepsilon 
+$$
+
+### Log-Linear Interpretation
+
+Holding disturbance ($\varepsilon$) and location constant, for every additional room in a house, sale price increases approximately on average by `r round(log_linear$coefficient[2], 2)*100`%.
+
+Holding disturbance ($\varepsilon$) and the number of rooms constant, when location equals 1 (or alternatively, the house is in Sunshine), sale price decreases approximately on average by `r abs(round(log_linear$coefficient[3], 2))*100`%.
+
+For example, a nine room house in Dandenong (Melbourne's East) will have an expected value of the log of sale price as:
+
+$$
+\log(\hat{\text{SalePrice}}) = `r round(log_linear$coefficient[1], 2)` + (`r round(log_linear$coefficient[2], 2)` \cdot 9) - (`r abs(round(log_linear$coefficient[3], 2))` \cdot 0) =
+$$
+
+$$
+`r round(predict(log_linear, newdata = data.frame(NumberofRooms = 9, Location = 0)), 4)`
+$$
+
+$$
+Or
+$$
+
+The expected value of sale price would be:
+
+$$
+\hat{\text{SalePrice}} = exp(`r round(log_linear$coefficient[1], 2)` + (`r round(log_linear$coefficient[2], 2)` \cdot 9) - (`r abs(round(log_linear$coefficient[3], 2))` \cdot 0)) = 
+$$
+
+$$
+\$`r round(scale_change(exp(predict(log_linear, newdata = data.frame(NumberofRooms = 9, Location = 0))), scale = 't', num = 1), 1)`
+$$
+
+The approximate percent increase in sale price from eight to nine bedrooms in Dandenong (Melbourne's East) can be calculated as:
+
+$$
+\log(\hat{\text{SalePrice}}) = `r round(log_linear$coefficient[1], 2)` + (`r round(log_linear$coefficient[2], 2)` \cdot 9) - (`r abs(round(log_linear$coefficient[3], 2))` \cdot 0)
+$$
+
+$$-$$
+
+$$
+\log(\hat{\text{SalePrice}}) = `r round(log_linear$coefficient[1], 2)` + (`r round(log_linear$coefficient[2], 2)` \cdot 8) - (`r abs(round(log_linear$coefficient[3], 2))` \cdot 0)
+$$
+
+$$
+\approx
+$$
+
+$$
+`r (round(predict(log_linear, newdata = data.frame(NumberofRooms = 9, Location = 0)), 4)-round(predict(log_linear, newdata = data.frame(NumberofRooms = 8, Location = 0)), 4))*100` \text{\%}
+$$
+
+## **Significance of Independent Variables on Sale Price**
+
+### Linear Model Inference Table (Table 1)
+
+```{r Linear F-test, comment = NA}
+
+summary(multi_linear)
+
+```
+
+### Log-Linear Model Inference Table (Table 2)
+
+```{r Log F-test, comment = NA}
+
+summary(log_linear)
+
+```
+
+### **Joint Significance**
+An F-test was conducted for both models to determine whether the two independent variables, the number of rooms and location, have a jointly significant relationship on sale price.
+
+$H_0\text{: } \beta_\text{Number of Rooms} = 0 \text{ and } \beta_\text{Location} = 0$
+
+$H_1\text{: } \beta_\text{Number of Rooms} \ne 0 \text{ or } \beta_\text{Location} \ne 0$
+
+For either model, the probability (or p-value) of $\beta_\text{Number of Rooms} = 0$ and $\beta_\text{Location} = 0$ is very small, well below the 5% level of significance. The null hypothesis is therefore rejected and it can be concluded with 95% confidence that there is a jointly significant effect of the number of rooms and location on sale price. 
+
+This also implies that using either of these models with $\beta_\text{Number of Rooms}$ and $\beta_\text{Location}$ will have better predictive power than if the intercepts were the only parameter.
+
+### **Individual Significance**
+Two t-tests were conducted for both models to determine whether each independent variable, the number of rooms and location, individually have a significant effect on sale price.
+
+$H_0\text{: } \beta_\text{Number of Rooms} = 0$
+
+$H_1\text{: } \beta_\text{Number of Rooms} \ne 0$
+
+For either model, the probability (or p-value) of $\beta_\text{Number of Rooms} = 0$ is very small, well below the 5% level of significance. The null hypothesis is therefore rejected and it can be concluded with 95% confidence that the number of rooms has an individually significant effect on sale price.
+
+$H_0\text{: } \beta_\text{Location} = 0$
+
+$H_1\text{: } \beta_\text{Location} \ne 0$
+
+For either model, the probability (or p-value) of $\beta_\text{Location} = 0$ is very small, well below the 5% level of significance. The null hypothesis is therefore rejected and it can be concluded with 95% confidence that location has an individually significant effect on sale price.
+
+
+## **Impact of an Interaction Term**
+Add a joint term, X1X2 into the regression model, and estimate the regression equation again. Report the p-value for the joint term X1X2. What does this imply?
+
+```{r Linear Interaction Term}
+
+joint_h_data <- h_data %>%
+  mutate(
+    NumberRooms_Location = NumberofRooms*Location
+    )
+
+#joint_linear <- lm(SellingPrice~NumberofRooms+Location+NumberRooms_Location, data = joint_h_data)
+
+```
+
+## **Impact of an Interaction Term**
+Add a joint term, X1X2 into the regression model, and estimate the regression equation again. Report the p-value for the joint term X1X2. What does this imply?
+```{r Log Interaction Term}
+#joint_log <- lm(log(SellingPrice)~NumberofRooms+Location+NumberRooms_Location, data = h_data)
+```
+
+## **Conclusion**
+On the basis of these results, indicate the most appropriate regression model for this set of data.
+```{r Conclusion}
+# Conclusion
+```
+
+## **Appendix**
+
+OpenAI. 2025, ChatGPT [Large language model], Retrieved March 25, 2025, from <https://chatgpt.com/>.
+
+Australian Bureau of Statistics Dec-quarter-2024, Total Value of Dwellings, ABS, viewed 30 March 2025, <https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/total-value-dwellings/latest-release>.
+
+Sharpe, Norean R., De Veaux, Richard D., Velleman, Paul F., Bock, David E., 2015, Business Statistics, Pearson Education Limited, eBook, accessed 30 March 2025 from ProQuest Online Database.
+
+Blair E. and Blair J., 2015, Applied Survey Sampling, SAGE Publications Inc, eBook, accessed 31 March 2025 from Sage Online Database.
+
+The formatting of this markdown pdf document has been created with the use of AI tools (OpenAI. 2025).
+
+
