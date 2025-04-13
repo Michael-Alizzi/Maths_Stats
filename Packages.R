@@ -1,4 +1,7 @@
+
 packages <- c("bslib", "shinydashboard", "shiny", "Ryacas", "plotly", "ggplot2", "dplyr", "tidyr", "openxlsx")
+
+packages <- c("Ryacas", "ggplot2", "dplyr", "tidyr", "openxlsx", "tinytex")
 
 for (pkg in packages) {
   

@@ -6,38 +6,68 @@ source('~/Maths_Stats/Distribution Functions.R')
 source('~/Maths_Stats/Transformations.R')
 source('~/Maths_Stats/Random Samples.R')
 source('~/Maths_Stats/Confidence Intervals and Hypothesis Tests.R')
-
+source('~/Maths_Stats/Supervised and Unsupervised Machine Learning.R')
 options(scipen = 999)
 
 # Function metadata
-attributes(f_test_p_stat_funct)
+attributes(condition_entropy_funct)
 
-library('dplyr')
-library('openxlsx')
-library('plotly')
-library('webshot')
-library('htmlwidgets')
+# Create the dataset as a data frame
+play_tennis_data <- data.frame(
+  Day = paste0("D", 1:14),
+  Outlook = c("Sunny", "Sunny", "Overcast", "Rain", "Rain", "Rain", "Overcast",
+              "Sunny", "Sunny", "Rain", "Sunny", "Overcast", "Overcast", "Rain"),
+  Temperature = c("Hot", "Hot", "Hot", "Mild", "Cool", "Cool", "Cool",
+                  "Mild", "Cool", "Mild", "Mild", "Mild", "Hot", "Mild"),
+  Humidity = c("High", "High", "High", "High", "Normal", "Normal", "Normal",
+               "High", "Normal", "Normal", "Normal", "High", "Normal", "High"),
+  Wind = c("Weak", "Strong", "Weak", "Weak", "Weak", "Strong", "Strong",
+           "Weak", "Weak", "Weak", "Strong", "Strong", "Weak", "Strong"),
+  PlayTennis = c("No", "No", "Yes", "Yes", "Yes", "No", "Yes",
+                 "No", "Yes", "Yes", "Yes", "Yes", "Yes", "No"),
+  stringsAsFactors = FALSE
+)
 
-h_data <- read.xlsx('Housing prices.xlsx')
-
-colnames(h_data) <- c("House", "SellingPrice", "Location", "NumberofRooms")
-
-plot(multi_linear$fitted.values, multi_linear$residuals,
-     main = "Residuals vs Fitted",
-     xlab = "Fitted Values", ylab = "Residuals",
-     pch = 20, col = "blue")  # smaller blue dots
-abline(h = 0, col = "red", lwd = 2)
 
 
-plot(log_linear$fitted.values, log_linear$residuals,
-     main = "Residuals vs Fitted",
-     xlab = "Fitted Values", ylab = "Residuals",
-     pch = 20, col = "blue",
-     ylim = range(c(log_linear$residuals, 0)))  # ensures 0 is included
-abline(h = 0, col = "red", lwd = 2)
+Tennis <- list()
 
-boxplot(h_data$SellingPrice, main = "Boxplot with Outliers")
+for (i in colnames(play_tennis_data)[-1]) {
+  
+  TennisFeatures <- play_tennis_data %>%
+    group_by(.data[[i]]) %>%
+    summarise(
+      Count = n(),
+      Proportion = n() / nrow(play_tennis_data), 
+      .groups = "drop"
+    )
+  
+  Tennis[[{{i}}]] <- TennisFeatures
+  
+}
 
-boxplot(log(h_data$SellingPrice), main = "Boxplot with Outliers")
+Tennis
 
-boxplot.stats(h_data$NumberofRooms)$out
+TennisConditional <- list()
+
+for (i in colnames(play_tennis_data)[-c(1, 6)]) {
+  TennisFeatures <- play_tennis_data %>%
+    group_by(PlayTennis, .data[[i]]) %>%
+    summarise(
+      Count = n(),
+      Proportion = n() / nrow(play_tennis_data),
+      .groups = "drop"
+    )
+  
+  TennisConditional[[i]] <- TennisFeatures
+}
+
+round(entropy_funct(Tennis$PlayTennis %>%
+                      filter(PlayTennis == "Yes") %>%
+                      pull(Proportion)
+                    , 
+                    Tennis$PlayTennis %>%
+                      filter(PlayTennis == "No") %>%
+                      pull(Proportion)
+) -
+  condition_entropy_data(play_tennis_data, 'Wind', 'PlayTennis', 'Yes'), 4)
