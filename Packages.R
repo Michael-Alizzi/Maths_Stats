@@ -1,4 +1,4 @@
-packages <- c("Ryacas", "ggplot2", "dplyr", "tidyr")
+packages <- c("Ryacas", "ggplot2", "dplyr", "tidyr", "openxlsx", "tinytex")
 
 for (pkg in packages) {
   
