@@ -10,7 +10,12 @@ source('~/Maths_Stats/Supervised and Unsupervised Machine Learning.R')
 options(scipen = 999)
 
 # Function metadata
-attributes(condition_entropy_funct)
+attributes(entropy_funct)
+
+condition_entropy_funct(c(2/5, 4/4, 3/5), c(3/5, 0/4, 2/5), c(5/14, 4/14, 5/14))
+
+entropy_funct(9/14, 5/14)-
+
 
 # Create the dataset as a data frame
 play_tennis_data <- data.frame(

@@ -1,0 +1,130 @@
+---
+title: ''
+author: ''
+date: ''
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+    dev: cairo_pdf
+    fig_caption: true
+    number_sections: false
+    toc: false
+    toc_depth: 2
+  word_document:
+    toc: false
+    toc_depth: '2'
+mainfont: Arial
+---
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE)
+
+options(scipen = 999)
+
+```
+
+\begin{center}
+\LARGE \textbf{Computer Science Assignment} \\
+\end{center}
+
+\begin{center}
+\Large \textbf{Michael Alizzi} \\
+\Large \textbf{15 April 2025}
+\end{center}
+
+\rule{\textwidth}{0.4pt}
+
+## Question One
+
+A two-class model was trained and then tested with a data set of 100 instances. The test set contained 60 instances in negative class N, and 40 instances in positive class P (these are the golden annotated labels). As a result of testing, the following prediction counts were obtained:
+
+- 50 instances of N were classified correctly.
+- 10 instances of N were classified into P.
+- 10 instances of P were classified correctly.
+- 30 instances of P were classified into N.
+
+### a) Construct a contingency table (also called confusion matrix).
+
+```{r Matrix, comment = NA}
+
+data <- data.frame(
+  Actual = factor(
+    c(rep("Actual Positives", 40),
+      rep("Actual Negatives", 60)
+      ),
+    levels = c("Actual Positives",
+               "Actual Negatives")
+  ),
+Prediction = factor(
+    c(rep("Predicted Positives", 10),
+      rep("Predicted Negatives", 30),
+      rep("Predicted Positives", 10),
+      rep("Predicted Negatives", 50)
+      ),
+    levels = c("Predicted Positives",
+               "Predicted Negatives")
+  )
+)
+
+CM <- table(data$Prediction, data$Actual)
+
+print(CM)
+
+```
+
+### b) Calculate the following macro metrics: precision, recall & F1. Show your calculations.
+
+```{r Macro Metrics}
+
+MacroPrecision <- round(((CM[1]/(CM[1]+CM[3]))+(CM[4]/(CM[4]+CM[2])))/2, 4)
+
+MacroRecall <- round(((CM[1]/(CM[1]+CM[2]))+(CM[4]/(CM[4]+CM[3])))/2, 4)
+
+MacroF1 <- round(2*MacroRecall*(MacroPrecision/(MacroRecall+MacroPrecision)), 4)
+
+```
+
+$\text{Precision}_{\text{Macro}} = \frac{1}{n} \sum_{i=1}^{n} \frac{TP_i}{TP_i + FP_i}$
+
+$= \frac{1}{2} \cdot \left(\frac{`r CM[1]`}{`r CM[1]` + `r CM[3]`} \right)  + \left( \frac{`r CM[4]`}{`r CM[4]` + `r CM[2]`} \right) = `r MacroPrecision`$
+
+$\text{Recall}_{\text{Macro}} = \frac{1}{n} \sum_{i=1}^{n} \frac{TP_i}{TP_i + FN_i}$
+
+$= \frac{1}{2} \cdot \left(\frac{`r CM[1]`}{`r CM[1]` + `r CM[2]`} \right)  + \left( \frac{`r CM[4]`}{`r CM[4]` + `r CM[3]`} \right) = `r MacroRecall`$
+
+$\text{F1}_{\text{Macro}} = 2 \cdot \text{Recall}_{\text{Macro}} \cdot \frac{\text{Precision}_{\text{Macro}}}{\text{Recall}_{\text{Macro}}+\text{Precision}_{\text{Macro}}}$
+
+$= 2 \cdot `r MacroRecall` \cdot \frac{`r MacroPrecision`}{`r MacroRecall` + `r MacroPrecision`} = `r MacroF1`$
+
+### c) Calculate the following micro metrics: precision, recall & F1. Show your calculations. 
+
+```{r Micro Metrics}
+
+MicroPrecision <- CM[1]/(CM[1]+CM[3])
+
+MicroRecall <- CM[1]/(CM[1]+CM[2])
+
+MicroF1 <- 2*MicroRecall*(MicroPrecision/(MicroRecall+MicroPrecision))
+
+```
+
+$\text{Precision}_{\text{Micro}} = \frac{TP}{TP + FP}$
+
+$= \frac{`r CM[1]`}{`r CM[1]` + `r CM[3]`}  = `r MicroPrecision`$
+
+$\text{Recall}_{\text{Micro}} = \frac{TP}{TP + FN}$
+
+$= \frac{`r CM[1]`}{`r CM[1]` + `r CM[2]`} = `r MicroRecall`$
+
+$\text{F1}_{\text{Micro}} = 2 \cdot \text{Recall}_{\text{Micro}} \cdot \frac{\text{Precision}_{\text{Micro}}}{\text{Recall}_{\text{Micro}}+\text{Precision}_{\text{Micro}}}$
+
+$= 2 \cdot `r MicroRecall` \cdot \frac{`r MicroPrecision`}{`r MicroRecall` + `r MicroPrecision`} = `r MicroF1`$
+
+## Question Two
+
+### a) Manually construct a Decision Tree for the following set of examples. What class is assigned to the instance of D15: {Sunny, Hot, High, Weak}? (4 marks)
+
+### b) Consider a Naive Bayes classifier for the same set of examples. What class is assigned to the instance of D15: {Sunny, Hot, High, Weak}? (4 marks)
+

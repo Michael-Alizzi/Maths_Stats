@@ -1,23 +1,28 @@
 # What is the entropy of a particular node?
 entropy_funct <- function(pPlus, pMinus) {
+  
+  entropy <- ifelse(
+    
+    pPlus == 0,
+    
+    -pMinus * log2(pMinus),
+    
+    ifelse(
+      
+      pMinus == 0,
+      
+      -pPlus * log2(pPlus),
+      
+      -pPlus * log2(pPlus) - pMinus * log2(pMinus)
+      
+    )
+    
+  )
+  
+  return(entropy)
+  
+}
 
-  if(pPlus == 0) {
-    
-    entropy <- -pMinus*log2(pMinus)
-    
-  } else if(pMinus == 0) {
-    
-    entropy <- -pPlus*log2(pPlus)
-    
-  } else {
-      
-    entropy <- (-pPlus*log2(pPlus))-(pMinus*log2(pMinus))
-      
-    }
-    
-    return(entropy)
-    
-  }
 
 attr(entropy_funct, "Entropy Function") <- 
 "Calculates entropy for a binary classification scenario. 
@@ -25,12 +30,13 @@ The parameter pPlus is the probability of a positive and
 pMinus is the probability of a negative."
 
 # What is the entropy of a particular node given a split by an attribute?
-condition_entropy_funct <- function(pPlusXp, pMinusXp, Xp, pPlusXf, pMinusXf, Xf) {
+condition_entropy_funct <- function(pPlusXp, pMinusXp, Xp) {
   
-  ConditionalEntropy <- (entropy_funct(pPlusXp, pMinusXp)*Xp)+(entropy_funct(pPlusXf, pMinusXf)*Xf)
+  entropy_vals <- entropy_funct(pPlusXp, pMinusXp)
   
-  return(ConditionalEntropy)
+  weighted_entropy <- entropy_vals * Xp
   
+  sum(weighted_entropy)
 }
 
 attr(condition_entropy_funct, "Conditional Entropy Function") <- 
