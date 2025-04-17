@@ -124,7 +124,7 @@ $= 2 \cdot `r MicroRecall` \cdot \frac{`r MicroPrecision`}{`r MicroRecall` + `r 
 
 ## Question Two
 
-### a) Manually construct a Decision Tree for the following set of examples. What class is assigned to the instance of D15: {Sunny, Hot, High, Weak}? (4 marks)
+### a) Manually construct a Decision Tree for the following set of examples. What class is assigned to the instance of D15: {Sunny, Hot, High, Weak}?
 
-### b) Consider a Naive Bayes classifier for the same set of examples. What class is assigned to the instance of D15: {Sunny, Hot, High, Weak}? (4 marks)
+### b) Consider a Naive Bayes classifier for the same set of examples. What class is assigned to the instance of D15: {Sunny, Hot, High, Weak}?
 

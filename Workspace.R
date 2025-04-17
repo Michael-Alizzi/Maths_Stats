@@ -12,10 +12,74 @@ options(scipen = 999)
 # Function metadata
 attributes(entropy_funct)
 
-condition_entropy_funct(c(2/5, 4/4, 3/5), c(3/5, 0/4, 2/5), c(5/14, 4/14, 5/14))
+TotalEntropy <- entropy_funct(9/14, 5/14)
 
-entropy_funct(9/14, 5/14)-
+outlook <- 
+  condition_entropy_funct(
+  c(2/5, 4/4, 3/5),
+  c(3/5, 0/4, 2/5),
+  c(5/14, 4/14, 5/14)
+  )
 
+tempurature <- 
+  condition_entropy_funct(
+    c(2/4, 4/6, 3/4),
+    c(2/4, 2/6, 1/4),
+    c(4/14, 6/14, 4/14)
+  )
+
+humidity <- 
+  condition_entropy_funct(
+    c(3/7, 6/7),
+    c(4/7, 1/7),
+    c(7/14, 7/14)
+  )
+
+wind <- 
+  condition_entropy_funct(
+    c(6/8, 3/6),
+    c(2/8, 3/6),
+    c(8/14, 6/14)
+  )
+
+gain_outlook <- 
+c(TotalEntropy-outlook,
+  TotalEntropy-tempurature,
+  TotalEntropy-humidity,
+  TotalEntropy-wind)
+
+names(gain_outlook) <- c("Information Gain Outlook", 
+                         "Information Gain tempurature", 
+                         "Information Gain humidity", 
+                         "Information Gain wind")
+
+gain_outlook <- 
+  sort(gain_outlook)
+
+LevelOneEntropy <- gain_outlook[4]
+
+SunnyEntropy <- entropy_funct(2/5, 3/5)
+
+LevelOneTempurature <- 
+  condition_entropy_funct(
+    c(0/2, 2/4, 1/2),
+    c(2/2, 2/4, 1/2),
+    c(2/5, 2/5, 2/5)
+  )
+
+LevelOneHumidity <- 
+  condition_entropy_funct(
+    c(3/7, 6/7),
+    c(4/7, 1/7),
+    c(7/14, 7/14)
+  )
+
+LevelOneWind <- 
+  condition_entropy_funct(
+    c(6/8, 3/6),
+    c(2/8, 3/6),
+    c(8/14, 6/14)
+  )
 
 # Create the dataset as a data frame
 play_tennis_data <- data.frame(
