@@ -1,3 +1,4 @@
+
 t_crit_funct <- function(alpha, df){
   
   critical_value_left <- qt(alpha, df)
@@ -15,7 +16,7 @@ t_crit_funct <- function(alpha, df){
 attr(t_crit_funct, "Critical Values for t-test") <- 
 "Left, right and two tailed critical values for a t-test"
 
-t_stat_funct <- function(data, mean, alpha, tail = 0){
+t_test_funct <- function(data, mean, alpha, tail = 0){
   
   if(tail == 0){ 
     
@@ -40,9 +41,32 @@ t_stat_funct <- function(data, mean, alpha, tail = 0){
   
 }
 
-attr(t_stat_funct, "t Statistic for t-test") <- 
-"Left, right and two tailed t-statistic. When the tail parameter = 0 (default) , it uses the left tailed t-statistic. When the tail parameter = 1, it uses the 
-right tailed t-statistic. When the tail parameter = 2, it uses the two tailed t-statistic."
+attr(t_test_funct, "Full t-test") <- 
+  "Use if you have sample data.
+Supports left-tailed, right-tailed, and two-tailed t-tests.
+- When tail = 0 (default), it performs a left-tailed test (alternative = 'less').
+- When tail = 1, it performs a right-tailed test (alternative = 'greater').
+- When tail = 2, it performs a two-tailed test (alternative = 'two.sided')."
+
+stat_manual <- function(X_bar, mean, std, n){
+  
+  stat <- (X_bar-mean)/(std/sqrt(n))
+  
+  return(stat)
+  
+}
+
+attr(stat_manual, "T or Z statistic") <- 
+  "
+  Calculates a T or Z statistic based on inputs. 
+- X_bar: sample mean
+- mean: hypothesised population mean (from H0)
+- std: standard deviation (use population std dev for Z, sample std dev for T)
+- n: sample size
+
+Returns the appropriate test statistic depending on context."
+
+
 
 t_stat_comm_var_funct <- function(X_bar, Y_bar, s_p, nY, nX){
   
@@ -133,7 +157,8 @@ attr(f_crit_funct, "Critical Values for f-test") <-
 "Left, right, and two-tailed critical values for an f-test, given numerator (df1) and denominator (df2) degrees of freedom. 
 Set the group with the larger sample variance as the numerator (df1)."
 
-f_stat_funct <- function(x, y, alpha){
+f_test_funct <- function(x, y, alpha){
+  
   test <- var.test(x, y, conf.level = 1 - alpha)
   
   f_stat <- test$statistic
@@ -149,8 +174,16 @@ f_stat_funct <- function(x, y, alpha){
   ))
 }
 
-attr(f_stat_funct, "f-Statistic for F-test") <- 
-"f-Statistic for F-test given two samples"
+attr(f_test_funct, "Full F-test") <- 
+  "Performs an F-test to compare the variances of two independent samples.
+- x: numeric vector of sample 1
+- y: numeric vector of sample 2
+- alpha: significance level (e.g. 0.05 for 95% confidence)
+Returns a list containing:
+- f_stat: observed F-statistic
+- p_value: p-value of the test
+- df: degrees of freedom for both groups
+- conf_int: confidence interval for the ratio of variances"
 
 f_test_conf_int_funct <- function(alpha, nX, nY, f_ratio){
   
@@ -171,7 +204,7 @@ f_test_conf_int_funct <- function(alpha, nX, nY, f_ratio){
 }
 
 attr(f_test_conf_int_funct, "Confidence Interval for f-test") <- 
-"Calculates upper and lower bounds using a t-test, given the alpha, sample size of x (nX), the sample size of y (nY) and the f-ratio (the larger sample 
+"Use if you have sample data. Calculates upper and lower bounds using a t-test, given the alpha, sample size of x (nX), the sample size of y (nY) and the f-ratio (the larger sample 
 variance, S2x divided by the smaller sample variance S2y)."
 
 f_test_p_stat_funct <- function(f_ratio, n1, n2, tail = 0){

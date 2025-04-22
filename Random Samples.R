@@ -44,6 +44,11 @@ population_S2 <- function(x, var_X_bar, n, population = 0){
   
 }
 
+attr(population_S2, "Calculates S2") <- 
+  "Input a numeric vector of length greater than 1 for the x parameter to get S2 (the variance of a sample). Set population parameter to 1, the var_X_bar 
+parameter (variance of multiple samples or variance of X bar) and n (the number of samples) as numeric vectors of length 1 to get the expected value
+of S2."
+
 VarStd_X_bar_funct <- function(E_S2, n){
   
   var_X_bar <- E_S2/n
@@ -56,11 +61,6 @@ VarStd_X_bar_funct <- function(E_S2, n){
 
 attr(VarStd_X_bar_funct, "Expected Variance and Standard Deviation of X Bar") <- 
   "Given the expected population variance (E_S2) and sample size (n), this function returns the variance and standard deviation of the sample mean."
-
-attr(population_S2, "Calculates S2") <- 
-"Input a numeric vector of length greater than 1 for the x parameter to get S2 (the variance of a sample). Set population parameter to 1, the var_X_bar 
-parameter (variance of multiple samples or variance of X bar) and n (the number of samples) as numeric vectors of length 1 to get the expected value
-of S2."
 
 inv_linear_prob_trans_funct <- function(a, b, y_1, y_2, mean, sd, PX = 2){
   
